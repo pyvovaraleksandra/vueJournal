@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <welcome/>
+    <auth/>
   </div>
 </template>
 
 <script>
-import welcome from "./Welcome";
+import auth from "./Auth";
 
 export default {
   name: 'app',
@@ -15,7 +15,7 @@ export default {
     }
   },
   components: {
-      welcome
+      auth
   }
 }
 </script>

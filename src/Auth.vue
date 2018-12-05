@@ -1,6 +1,10 @@
 <template>
     <div class="Welcome container">
-        <form action="" class="center-align">
+        <form
+            class="center-align"
+            novalidate
+            @submit.prevent="submit({payload: {heading}, meta: {validateOnly}})"
+        >
             <div class="row">
                 <div class="input-field col s6 offset-s3 Welcome__input">
                     <input id="email" type="text" v-model="email">
@@ -14,20 +18,31 @@
                 </div>
             </div>
             <div class="row">
-                <a class="waves-effect waves-light btn">Submit</a>
+                <button class="btn waves-effect waves-light" type="submit" name="action">Submit</button>
             </div>
         </form>
     </div>
 </template>
 
 <script>
+    import { mapActions } from "vuex";
+    import { mapFieldsToComputed } from "./store/lib/vuex-form";
+
     export default {
-        name: 'Welcome',
+        name: 'Auth',
         data() {
             return {
-                email: "",
-                password: "",
+                formKey: "authForm",
             }
+        },
+        computed: {
+            ...mapFieldsToComputed("authForm", [
+                "email",
+                "password",
+            ])
+        },
+        methods: {
+            ...mapActions("authForm", ["submit", "changeField"]),
         }
     }
 </script>

@@ -4,12 +4,11 @@ import { email, Form, required } from "./lib/vuex-form";
 
 type FetchStatus = "init" | "loading" | "ok" | "error";
 
-export interface FaqState {
+export interface AuthState {
     fetchStatus: FetchStatus;
 }
 
-const module: Module<FaqState, {}> = {
-    namespaced: true,
+const module: Module<AuthState, {}> = {
     state: {
         fetchStatus: "init",
     },

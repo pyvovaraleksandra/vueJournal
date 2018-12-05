@@ -1,16 +1,16 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-// import chat, { ChatState } from "./chat";
+import welcome, { AuthState } from "./welcome";
 
 Vue.use(Vuex);
 
 export interface RootState {
-    // chat: ChatState;
+    welcome: AuthState;
 }
 
 export default new Vuex.Store<any>({
     modules: {
-        // chat,
+        welcome,
     },
 });
