@@ -1,6 +1,6 @@
 import { Module } from "vuex";
 import { email, Form, required } from "./lib/vuex-form";
-//import api from "@/lib/api";
+import api from "./lib/api";
 
 type FetchStatus = "init" | "loading" | "ok" | "error";
 
@@ -39,6 +39,9 @@ const module: Module<AuthState, {}> = {
             },
             async onSubmit({ commit, dispatch }, { heading }) {
                 console.log("SUBMIT!");
+
+
+                api.trying();
             },
         }),
     }

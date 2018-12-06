@@ -1,16 +1,16 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import welcome, { AuthState } from "./welcome";
+import auth, { AuthState } from "./auth";
 
 Vue.use(Vuex);
 
 export interface RootState {
-    welcome: AuthState;
+    auth: AuthState;
 }
 
 export default new Vuex.Store<any>({
     modules: {
-        welcome,
+        auth,
     },
 });
