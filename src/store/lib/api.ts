@@ -1,31 +1,25 @@
 import Vue from "vue";
+const V = Vue as any;
 import Http from "vue-resource";
-import {stringify} from "querystring";
+import { stringify } from "querystring";
 
 type HttpOptions = Http.HttpOptions;
 type HttpResponse = Http.HttpResponse;
 
+let host = 'http://localhost:3000/api';
 
-const V = Vue as any;
+type Response<T = {}> = Promise<CommonResponse<T>>;
 
 interface GeneralMutateRequest<TBody = void, TParams = {}> {
     params?: TParams;
     body: TBody;
 }
 
-let link = 'http://localhost:3000/api/v1/sign_in';
-
-//type Response<T = {}> = Promise<CommonResponse<T>>;
-
 class ApiService {
 
-   public trying() {
-       return V.http.post(link, {"email": "admin@journal.com", "password": "12345678"}).then(function(response){
-           console.log(response);
-       }, function(error){
-           console.log(error.statusText);
-       });
-   }
+    public postSignIn({ body }: GeneralMutateRequest<SignInRequest>):Response<SignInResponse> {
+        return this.post(`/v1/sign_in`, body);
+    }
 
 
     // private get(url: string, request?: HttpOptions) {
@@ -34,20 +28,21 @@ class ApiService {
     //         .then((response: HttpResponse) => response.json())
     //         .catch((error: HttpResponse) => Promise.resolve({response: null, errors: error, status: 422}));
     // }
-    // private post(
-    //     url: string,
-    //     body: any,
-    //     parseJson = true,
-    //     request?: HttpOptions
-    // ) {
-    //     return V.http
-    //         .post(url, body, request)
-    //         .then(
-    //             (response: HttpResponse) =>
-    //                 parseJson ? response.json() : response.text()
-    //         )
-    //         .catch((error: HttpResponse) => Promise.resolve({response: null, errors: error, status: 422}));
-    // }
+
+    private post(
+        url: string,
+        body: any,
+        parseJson = true,
+        request?: HttpOptions
+    ) {
+        return V.http
+            .post(`${host}${url}`, body, request)
+            .then(
+                (response: HttpResponse) =>
+                    parseJson ? response.json() : response.text()
+            )
+            .catch((error: HttpResponse) => Promise.resolve({response: null, errors: error, status: 422}));
+    }
     //
     // private delete(url: string, request?: HttpOptions) {
     //     return V.http

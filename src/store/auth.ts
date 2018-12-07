@@ -37,11 +37,21 @@ const module: Module<AuthState, {}> = {
                     ],
                 },
             },
-            async onSubmit({ commit, dispatch }, { heading }) {
+            async onSubmit({ commit, getters }, { heading }) {
                 console.log("SUBMIT!");
 
+                const body = {
+                    email : getters['field']("email"),
+                    password : getters['field']("password"),
+                };
 
-                api.trying();
+                // const body = {
+                //     "email": "admin@journal.com", "password": "12345678"
+                // };
+
+                const response = await api.postSignIn({body});
+
+                console.log(response);
             },
         }),
     }

@@ -55,7 +55,10 @@
         },
         methods: {
             ...mapActions("authForm", ["submit"]),
-        }
+        },
+        mounted() {
+            console.log(">>>", this.$router);
+        },
     }
 </script>
 
