@@ -21,13 +21,21 @@ class ApiService {
         return this.post(`/v1/sign_in`, body);
     }
 
+    public getRelationships() {
+        return this.get(`/v1/relationships/current`);
+    }
 
-    // private get(url: string, request?: HttpOptions) {
-    //     return V.http
-    //         .get(url, request)
-    //         .then((response: HttpResponse) => response.json())
-    //         .catch((error: HttpResponse) => Promise.resolve({response: null, errors: error, status: 422}));
-    // }
+    private get(url: string, request?: HttpOptions) {
+        const token = localStorage.getItem("token");
+
+        V.http.headers.common.Authorization = `Bearer ${token}`;
+        V.http.headers.common["Content-Type"] = "application/json";
+
+        return V.http
+            .get(`${host}${url}`, request)
+            .then((response: HttpResponse) => response.json())
+            .catch((error: HttpResponse) => Promise.resolve({response: null, errors: error, status: 422}));
+    }
 
     private post(
         url: string,
@@ -53,3 +61,9 @@ class ApiService {
 }
 
 export default new ApiService();
+
+declare global {
+    interface Window {
+        TOCKEN: string;
+    }
+}

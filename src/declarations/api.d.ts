@@ -2,8 +2,6 @@ interface CommonResponse<TResponse = any, TNotification = string> {
     _token: string;
     response: TResponse | null;
     status: number;
-    notification: TNotification;
-    warning: string;
     errors: Hash<string[]> | null;
 }
 

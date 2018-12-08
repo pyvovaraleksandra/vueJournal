@@ -1,20 +1,29 @@
 import { Module } from "vuex";
 import { email, Form, required } from "./lib/vuex-form";
 import api from "./lib/api";
+import router from "../main";
 
 type FetchStatus = "init" | "loading" | "ok" | "error";
 
 export interface AuthState {
     fetchStatus: FetchStatus;
+    email: string;
+    name: string;
 }
 
 const module: Module<AuthState, {}> = {
     state: {
         fetchStatus: "init",
+        email: "",
+        name: "",
     },
     mutations: {
         setFetchStatus(state, status: FetchStatus) {
             state.fetchStatus = status;
+        },
+        setUserData(state, {email, name}) {
+            state.email = email;
+            state.name = name;
         },
     },
     actions: {
@@ -37,21 +46,32 @@ const module: Module<AuthState, {}> = {
                     ],
                 },
             },
-            async onSubmit({ commit, getters }, { heading }) {
-                console.log("SUBMIT!");
+            async onSubmit({ commit, getters }) {
+                commit("setFetchStatus", "loading");
 
                 const body = {
                     email : getters['field']("email"),
                     password : getters['field']("password"),
                 };
+                const  { status, response, errors }  = await api.postSignIn({body});
 
-                // const body = {
-                //     "email": "admin@journal.com", "password": "12345678"
-                // };
+                if (status !== 0) {
+                    console.error(errors.body);
+                    commit("setErrors", {errors: errors.body});
+                    return;
+                }
 
-                const response = await api.postSignIn({body});
+                window.TOCKEN = response.api_token;
+                localStorage.setItem('token', response.api_token);
+                localStorage.setItem('LOGINED', "true");
 
-                console.log(response);
+                commit("authForm/setUserData", {email: response.email, name: response.name});
+
+                router.push({
+                    path: "/disciplines"
+                });
+
+                commit("setFetchStatus", "ok");
             },
         }),
     }

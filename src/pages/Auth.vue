@@ -34,8 +34,8 @@
 
 <script>
     import { mapActions } from "vuex";
-    import { mapFieldsToComputed } from "./store/lib/vuex-form";
-    import validation from "./components/BaseValidationError";
+    import { mapFieldsToComputed } from "../store/lib/vuex-form/index";
+    import validation from "../components/BaseValidationError";
 
     export default {
         name: 'Auth',
@@ -57,7 +57,6 @@
             ...mapActions("authForm", ["submit"]),
         },
         mounted() {
-            console.log(">>>", this.$router);
         },
     }
 </script>
@@ -99,7 +98,7 @@
 
 <style lang="scss">
     #app {
-        background: url("./assets/Auth-bg.jpg") center;
+        background: url("../assets/Auth-bg.jpg") center;
         background-size: cover;
     }
 
