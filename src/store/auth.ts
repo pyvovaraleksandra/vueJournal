@@ -53,6 +53,7 @@ const module: Module<AuthState, {}> = {
                     email : getters['field']("email"),
                     password : getters['field']("password"),
                 };
+
                 const  { status, response, errors }  = await api.postSignIn({body});
 
                 if (status !== 0) {
@@ -61,9 +62,15 @@ const module: Module<AuthState, {}> = {
                     return;
                 }
 
-                window.TOCKEN = response.api_token;
+                const settings = {
+                    email: response.email,
+                    name: response.name,
+                    role: response.role
+                };
+
                 localStorage.setItem('token', response.api_token);
-                localStorage.setItem('LOGINED', "true");
+                localStorage.setItem('logined', "true");
+                localStorage.setItem('user', JSON.stringify(settings));
 
                 commit("authForm/setUserData", {email: response.email, name: response.name});
 

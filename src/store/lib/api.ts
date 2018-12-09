@@ -29,6 +29,10 @@ class ApiService {
         return this.get(`/v1/relationships/${id}/modules`);
     }
 
+    public getModule(relationshipId: number, moduleId: number) {
+        return this.get(`/v1/relationships/${relationshipId}/modules/${moduleId}`);
+    }
+
     private get(url: string, request?: HttpOptions) {
         const token = localStorage.getItem("token");
 

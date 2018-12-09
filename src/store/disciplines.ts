@@ -1,7 +1,5 @@
 import { Module } from "vuex";
-import { email, Form, required } from "./lib/vuex-form";
 import api from "./lib/api";
-import router from "../main";
 
 type FetchStatus = "init" | "loading" | "ok" | "error";
 
@@ -38,12 +36,14 @@ const module: Module<DisciplinesState, {}> = {
             for (let item of response) {
                 const modules = await dispatch("getModules", item.discipline.id);
 
-                disciplines.push( {
+                disciplines.push({
                     name: item.discipline.title,
                     id: item.id,
                     modules
                 });
             }
+
+            localStorage.setItem("disciplines", JSON.stringify(disciplines));
 
             commit("setDisciplines", disciplines);
             commit("setFetchStatus", "ok");
@@ -55,9 +55,13 @@ const module: Module<DisciplinesState, {}> = {
                 console.error(errors);
             }
 
-            console.log(response);
-            return response.map(module => module.title);
-        }
+            return response
+                .filter(module => module.enabled)
+                .map(module => ({
+                    title: module.title,
+                    id: module.id
+                }));
+        },
     },
 };
 

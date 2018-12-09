@@ -1,26 +1,29 @@
 <template>
-    <div class="Disciplines container">
-        <div class="Disciplines__title">Выберите дисциплину: {{name}}</div>
-        <div class="Disciplines__wrap" >
-            <spinner class="Disciplines__spinner" v-if="loading"/>
-            <BaseCollapse
-                    v-for="(discipline, index) in disciplines"
-                    :index="index + 1"
-                    :key="index"
-                    v-else
-            >
-                <div slot="header">
-                    <a class="waves-effect waves-light btn Disciplines__discipline"> {{ discipline.name }} </a>
-                </div>
-                <div slot="content">
-                    <a
-                        v-for="moduleName in discipline.modules"
-                        class="Disciplines__module"
-                    >
-                        {{ moduleName }}
-                    </a>
-                </div>
-            </BaseCollapse>
+    <div class="Layout">
+        <div class="Disciplines container">
+            <div class="Disciplines__title">Выберите дисциплину: {{name}}</div>
+            <div class="Disciplines__wrap" >
+                <spinner class="Disciplines__spinner" v-if="loading"/>
+                <BaseCollapse
+                        v-for="(discipline, index) in disciplines"
+                        :index="index + 1"
+                        :key="index"
+                        v-else
+                >
+                    <div slot="header">
+                        <a class="waves-effect waves-light btn Disciplines__discipline"> {{ discipline.name }} </a>
+                    </div>
+                    <div slot="content">
+                        <a
+                                v-for="module in discipline.modules"
+                                class="Disciplines__module"
+                                @click="handleShowModule(discipline.id, module.id)"
+                        >
+                            {{ module.title }}
+                        </a>
+                    </div>
+                </BaseCollapse>
+            </div>
         </div>
     </div>
 </template>
@@ -52,6 +55,9 @@
         },
         methods: {
             ...mapActions(["getDisciplines"]),
+            handleShowModule(disciplineId, id) {
+                this.$router.push(`/disciplines/${disciplineId}/modules/${id}`);
+            }
         },
         mounted() {
             this.getDisciplines();
@@ -60,6 +66,14 @@
 </script>
 
 <style lang="scss" scoped>
+    .Layout {
+        display: flex;
+        align-items: center;
+        height: 100vh;
+        background: url("../assets/Disciplines-bg.jpg") center;
+        background-size: cover;
+    }
+
     .Disciplines {
         display: flex;
         flex-direction: column;
@@ -92,7 +106,14 @@
             padding: 5px;
             color: #fff;
             display: block;
-            text-shadow: 0px 6px 12px black;
+            text-shadow: 0 6px 12px black;
+            transition: transform .3s;
+
+            &:hover {
+                transform: translateY(-1px);
+                cursor: pointer;
+                text-shadow: 0 9px 12px black;
+            }
         }
 
         &__wrap {
@@ -115,14 +136,4 @@
         }
     }
 
-</style>
-
-<style lang="scss">
-    #app {
-        display: flex;
-        align-items: center;
-        height: 100vh;
-        background: url("../assets/Disciplines-bg.jpg") center;
-        background-size: cover;
-    }
 </style>

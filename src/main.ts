@@ -16,6 +16,21 @@ const router = new Router({
     mode: 'history'
 });
 
+const logined = localStorage.getItem('logined');
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth) && !logined) {
+        return next({
+            path: '/auth',
+            query: { ...to.query, redirect: to.fullPath }
+        });
+    }
+
+    next();
+});
+
+
+
 new Vue({
   el: '#app',
   store,
