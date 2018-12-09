@@ -3,33 +3,51 @@
         <div class="Disciplines__title">Выберите дисциплину: {{name}}</div>
         <div class="Disciplines__wrap" >
             <spinner class="Disciplines__spinner" v-if="loading"/>
-            <a
-                v-else
-                class="waves-effect waves-light btn Disciplines__discipline"
-                v-for="discipline of disciplines"
+            <BaseCollapse
+                    v-for="(discipline, index) in disciplines"
+                    :index="index + 1"
+                    :key="index"
+                    v-else
             >
-                {{ discipline }}
-            </a>
+                <div slot="header">
+                    <a class="waves-effect waves-light btn Disciplines__discipline"> {{ discipline.name }} </a>
+                </div>
+                <div slot="content">
+                    <a
+                        v-for="moduleName in discipline.modules"
+                        class="Disciplines__module"
+                    >
+                        {{ moduleName }}
+                    </a>
+                </div>
+            </BaseCollapse>
         </div>
     </div>
 </template>
 
 <script>
     import { mapState, mapActions } from "vuex";
-    import { mapFieldsToComputed } from "../store/lib/vuex-form/index";
-    import spinner from "../../public/spinner.svg"
+    import spinner from "../../public/spinner.svg";
+    import BaseCollapse from "../components/BaseCollapse";
 
     export default {
         name: 'Discipline',
+        data() {
+            return {
+                showModals: false,
+            }
+        },
         components: {
-            spinner
+            spinner,
+            BaseCollapse,
         },
         computed: {
             ...mapState({
                 email: state => state.auth.email,
                 name: state => state.auth.name,
                 disciplines: state => state.disciplines.disciplines,
-                loading: state => state.disciplines.loading,
+                loading: state => state.disciplines.fetchStatus === "init" ||
+                         state.disciplines.fetchStatus === "loading",
             }),
         },
         methods: {
@@ -66,8 +84,15 @@
         }
 
         &__discipline {
-            margin-bottom: 1rem;
             min-height: 36px;
+            width: 100%;
+        }
+
+        &__module {
+            padding: 5px;
+            color: #fff;
+            display: block;
+            text-shadow: 0px 6px 12px black;
         }
 
         &__wrap {

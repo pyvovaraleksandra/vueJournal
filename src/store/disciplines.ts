@@ -24,7 +24,7 @@ const module: Module<DisciplinesState, {}> = {
         }
     },
     actions: {
-        async getDisciplines({ commit }) {
+        async getDisciplines({ commit, dispatch }) {
             commit("setFetchStatus", "loading");
 
             const {status, response, errors} = await api.getRelationships();
@@ -33,10 +33,30 @@ const module: Module<DisciplinesState, {}> = {
                 console.error(errors);
             }
 
-            const disciplines = response.map(item => item.discipline.title);
+            const disciplines = [];
+
+            for (let item of response) {
+                const modules = await dispatch("getModules", item.discipline.id);
+
+                disciplines.push( {
+                    name: item.discipline.title,
+                    id: item.id,
+                    modules
+                });
+            }
 
             commit("setDisciplines", disciplines);
             commit("setFetchStatus", "ok");
+        },
+        async getModules({}, disciplineId) {
+            const { status, response, errors} = await api.getModules(disciplineId);
+
+            if (status !== 0) {
+                console.error(errors);
+            }
+
+            console.log(response);
+            return response.map(module => module.title);
         }
     },
 };
