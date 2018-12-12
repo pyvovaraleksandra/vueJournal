@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="TeacherDisciplines">
-            <div class="TeacherDisciplines__title">Создать модуль для дисциплины</div>
+            <div class="TeacherDisciplines__title">Модули для дисциплины</div>
             <div class="TeacherDisciplines__wrap" >
                 <spinner class="TeacherDisciplines__spinner" v-if="loading"/>
                 <BaseCollapse

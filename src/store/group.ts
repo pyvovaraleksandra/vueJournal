@@ -31,19 +31,22 @@ const module: Module<GroupState, {}> = {
                 console.error(errors);
             }
 
-            const questions = response.map(q => ({
-                text: q.description,
-                id: q.id,
-                questionGroupId: q.question_group_id,
-                kind: q.kind,
-                type: q.kind === "text"
-                    ? "text"
-                    : q.kind === "one"
-                        ? "radio"
-                        : "checkbox",
-                variants: q.variants,
-                answer: q.answer
-            }));
+            const questions = response.map(q => {
+                const answer = q.kind === "text" ? "" : q.answer.slice(1, -1).split(",").map(a => +a);
+                return {
+                    text: q.description,
+                    id: q.id,
+                    questionGroupId: q.question_group_id,
+                    kind: q.kind,
+                    type: q.kind === "text"
+                        ? "text"
+                        : q.kind === "one"
+                            ? "radio"
+                            : "checkbox",
+                    variants: q.variants,
+                    answer
+                };
+            });
 
             commit("setQuestions", questions);
             commit("setGroupFetchStatus", "ok");

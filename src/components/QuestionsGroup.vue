@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="Block">
-            <div class="Block__title">Создать группу вопросов для модуля</div>
+            <div class="Block__title">Группы вопросов для модуля</div>
             <div class="Block__wrap" >
                 <spinner class="Block__spinner" v-if="loading"/>
                 <BaseCollapse

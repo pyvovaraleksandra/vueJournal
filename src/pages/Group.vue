@@ -1,12 +1,15 @@
 <template>
     <div class="Group">
         <form class="Group__form" @submit.prevent="">
+            <div class="Group__title">
+                <div class="Group__title-discipline">Web technologies and web design</div>
+                <div class="Group__title-module">Html and css</div>
+            </div>
             <div
                 class="row Group__question"
                 :class="{'is-text': question.type === 'text'}"
                 v-for="(question, index) in questions"
             >
-                <div class="Module__question-index">{{ index+1 }}.</div>
                 <!-- TITLE -->
                 <div class="Group__question-row">
                     <div class="Group__question-label">Текст вопроса:</div>
@@ -19,11 +22,11 @@
                     <div class="Group__question-label">Тип вопроса:</div>
                     <div class="Group__question-value">
                         <label class="Group__question-valueLabel">
-                            <input name="kind" type="radio" :value="text" :checked="question.kind === 'texx'"/>
+                            <input name="kind" type="radio" value="text" :checked="question.kind === 'text'"/>
                             <span> открытый </span>
                         </label>
                         <label class="Group__question-valueLabel">
-                            <input name="kind" type="radio" :value="one" :checked="question.kind === 'one'"/>
+                            <input name="kind" type="radio" value="one" :checked="question.kind === 'one'"/>
                             <span> один враиант ответв </span>
                         </label>
                         <label class="Group__question-valueLabel">
@@ -36,12 +39,21 @@
                 <div class="Group__question-row" v-if="question.kind !== 'text' && newKind !== 'text'">
                     <div class="Group__question-label">Варианты ответов:</div>
                     <div class="Group__question-value" v-if="question.kind !== 'text'">
-                        <label class="Group__question-valueLabel" v-for="variant in question.variants">
-                            <input name="variants" :type="question.type" value="many" :checked="question.kind === 'many'"/>
+                        <label class="Group__question-valueLabel" v-for="(variant, index) in question.variants">
+                            <input name="variants" :type="question.type" :value="index" :checked="question.answer.includes(index)"/>
                             <span> {{ variant }} </span>
                         </label>
+                        <button class="btn waves-effect waves-light Group__question-add" type="submit" name="action">+</button>
                     </div>
                 </div>
+                <!-- DELETE -->
+                <div class="Group__btn">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">УДАЛИТЬ ВОПРОС</button>
+                </div>
+            </div>
+            <!-- SUBMIIT -->
+            <div class="Group__btn">
+                <button class="btn waves-effect waves-light" type="submit" name="action">ДОБАВИТЬ ЕЩЕ ОДИН ВОПРОС</button>
             </div>
         </form>
     </div>
@@ -54,7 +66,7 @@
     import modal from "../components/BaseModal";
 
     export default {
-        name: "QuestionsGroup",
+        name: "Group",
         components: {
             spinner,
             BaseCollapse,
@@ -101,15 +113,39 @@
     .Group {
         min-height: 100vh;
         background: #efefef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &__title {
+            text-align: center;
+
+            &-discipline {
+                font-weight: 500;
+                font-size: 18px;
+                margin-bottom: .5rem;
+            }
+
+            &-module {
+                font-weight: 500;
+                font-size: 20px;
+                margin-bottom: 3rem;
+            }
+        }
 
         &__form {
             background: #fff;
+            box-shadow: 0 0 8px #d0c8c8;
             width: 50%;
             margin: 0 auto;
-            padding: 1rem 2rem;
+            padding: 2rem 2rem;
         }
 
         &__question {
+            border-bottom: 1px solid #827f7f;
+            padding-bottom: 15px;
+            margin-bottom: 35px;
+
             &-row {
                 display: flex;
                 margin-bottom: 1rem;
@@ -126,12 +162,30 @@
                 &.text {
                     margin-top: -10px;
                     margin-bottom: 0;
+
+                    input {
+                        border-bottom: 1px solid #cacaca;
+                    }
                 }
 
                 &Label {
                     display: block;
+                    color: rgba(0,0,0,0.87);
                 }
             }
+
+            &-add {
+                width: 100px;
+                margin-top: 12px;
+                background: #efefef;
+                color: #1e887e;
+                font-weight: 600;
+                font-size: 20px;
+            }
+        }
+
+        &__btn {
+            text-align: center;
         }
     }
 </style>
