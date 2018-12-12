@@ -42,11 +42,6 @@
 
     export default {
         name: 'Discipline',
-        data() {
-            return {
-                showModals: false,
-            }
-        },
         components: {
             spinner,
             BaseCollapse,

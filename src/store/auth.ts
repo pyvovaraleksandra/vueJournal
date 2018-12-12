@@ -72,7 +72,7 @@ const module: Module<AuthState, {}> = {
 
                 commit("setUserData", {email: response.email, name: response.name}, {root: true});
 
-                const path = response.role === "student" ? "/disciplines" : "/teacher-disciplines";
+                const path = response.role === "student" ? "/disciplines" : "/teacher";
 
                 router.push({ path });
 

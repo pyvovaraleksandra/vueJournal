@@ -1,13 +1,5 @@
 <template>
-    <div class="Layout">
-        <div class="TeacherDisciplines__you">
-            <div>
-                Вы зашли под именем
-                <span  class="TeacherDisciplines__you-name">Коба Сергей</span>
-            </div>
-            <div class="">Выйти</div>
-        </div>
-
+    <div class="Teacher__modules">
         <div class="TeacherDisciplines container">
             <div class="TeacherDisciplines__title">Создать модуль для дисциплины</div>
             <div class="TeacherDisciplines__wrap" >
@@ -22,70 +14,59 @@
                         <a class="waves-effect waves-light btn TeacherDisciplines__discipline"> {{ discipline.name }} </a>
                     </div>
                     <div slot="content">
-                        <a
-                            v-for="module in discipline.modules"
-                            class="TeacherDisciplines__module"
-                            @click="handleShowModule(discipline.id, module.id)"
-                        >
-                            {{ module.title }}
-                        </a>
+                        <div v-for="module in discipline.modules" class="TeacherDisciplines__moduleWrap">
+                            <a class="TeacherDisciplines__module" @click="handleShowModule(discipline.id, module.id)">
+                                {{ module.title }}
+                            </a>
+                            <div class="TeacherDisciplines__buttons">
+                                <i class="material-icons TeacherDisciplines__buttons-icon">remove_red_eye</i>
+                                <i class="material-icons TeacherDisciplines__buttons-icon"  @click="handleShowForm(discipline.id)">edit</i>
+                                <i class="material-icons TeacherDisciplines__buttons-icon">close</i>
+                            </div>
+                        </div>
                         <a class="waves-effect waves-light btn TeacherDisciplines__module-create" @click="handleShowForm(discipline.id)">СОЗДАТЬ НОВЫЙ МОДУЛЬ </a>
                     </div>
                 </BaseCollapse>
             </div>
         </div>
+        <modal @close="" v-if="false">
+            <div slot="header">Удаление</div>
+            <div slot="body">
+                <div>Вы уверены, что хотите удалить модуль?</div>
+            </div>
+        </modal>
     </div>
 </template>
 
 <script>
-    import { mapState, mapActions } from "vuex";
+    import { mapState } from "vuex";
     import spinner from "../../public/spinner.svg";
-    import BaseCollapse from "../components/BaseCollapse";
-
+    import BaseCollapse from "./BaseCollapse";
+    import modal from "./BaseModal";
 
     export default {
-        name: 'Discipline',
-        data() {
-            return {
-                showModals: false,
-            }
-        },
+        name: "TeacherModules",
         components: {
             spinner,
             BaseCollapse,
+            modal
         },
         computed: {
             ...mapState({
-                email: state => state.auth.email,
-                name: state => state.auth.name,
                 disciplines: state => state.addModule.disciplines,
                 loading: state => state.addModule.fetchStatus === "init" ||
                          state.addModule.fetchStatus === "loading",
             }),
         },
         methods: {
-            ...mapActions(["getDisciplinesList"]),
             handleShowForm(disciplineId) {
-                this.$router.push(`/teacher-disciplines/${disciplineId}/create-module`);
+                this.$router.push(`/teacher/discipline/${disciplineId}/create-module`);
             }
-        },
-        mounted() {
-            this.getDisciplinesList();
         },
     }
 </script>
 
 <style lang="scss" scoped>
-    .Layout {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        background: url("../assets/AddModule-bg.jpg") center;
-        background-size: cover;
-    }
-
     .TeacherDisciplines {
         display: flex;
         flex-direction: column;
@@ -95,25 +76,6 @@
         box-shadow: 0 0 8px 0 rgba(0, 0, 0, .7);
         border: 2px solid #4e4e4e;
         max-height: 80vh;
-
-        &__you {
-            width: 70%;
-            color: #fff;
-            text-shadow: -5px 1px 15px black;
-            margin-bottom: 4px;
-            background: rgba(74, 74, 74, 0.6);
-            box-shadow: 0 0 8px 0 rgba(0, 0, 0, .7);
-            border: 2px solid #4e4e4e;
-            padding-left: 1rem;
-            padding-right: 1rem;
-            display: flex;
-            justify-content: space-between;
-
-            &-name {
-                font-weight: 600;
-                text-shadow: 0 0 20px black;
-            }
-        }
 
         &__title {
             font-size: 17px;
@@ -155,6 +117,10 @@
                 justify-content: center;
                 align-items: center;
             }
+
+            &Wrap {
+                position: relative;
+            }
         }
 
         &__wrap {
@@ -176,8 +142,30 @@
             }
         }
 
-        &__input {
+        &__buttons {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            width: 100px;
 
+            &-icon {
+                text-shadow: 0 9px 12px #23504b;
+                transition: transform .3s, color .3s;
+                color: #cecece;
+                font-size: 21px;
+
+
+                &:hover {
+                    transform: translateY(-1px);
+                    cursor: pointer;
+                    text-shadow: 0 9px 12px #23504b;
+                    color: #e9f3f2;
+                }
+            }
         }
     }
 </style>

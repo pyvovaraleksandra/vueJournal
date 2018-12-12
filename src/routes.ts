@@ -2,7 +2,7 @@ import auth from "./pages/Auth.vue";
 import disciplines from "./pages/Disciplines.vue";
 import module from "./pages/Module.vue";
 import result from "./pages/Result.vue";
-import addModule from "./pages/AddModule.vue";
+import teacher from "./pages/Teacher.vue";
 import createModuleForm from "./pages/CreateModuleForm.vue";
 
 import router from "./main";
@@ -33,12 +33,12 @@ const routes = [
         meta: { requiresAuth: true }
     },
     {
-        path: `/teacher-disciplines`,
-        component: addModule,
+        path: `/teacher`,
+        component: teacher,
         meta: { requiresAuth: true }
     },
     {
-        path: `/teacher-disciplines/:disciplineId/create-module`,
+        path: `/teacher/discipline/:disciplineId/create-module`,
         component: createModuleForm,
         meta: { requiresAuth: true }
     }

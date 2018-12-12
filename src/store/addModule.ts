@@ -27,8 +27,6 @@ const module: Module<AddModuleState, {}> = {
 
             const {status, response, errors} = await api.getDisciplines();
 
-            console.log(response);
-
             if (status !== 0) {
                 console.error(errors);
             }
@@ -55,7 +53,7 @@ const module: Module<AddModuleState, {}> = {
 
             if (status !== 0) {
                 console.error(errors);
-            };
+            }
 
             return response
                 .map(module => ({

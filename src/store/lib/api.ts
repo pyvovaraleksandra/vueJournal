@@ -58,6 +58,16 @@ class ApiService {
         );
     }
 
+    public getQuestionGroups(id) {
+        return this.get(`/v1/modules/${id}/question_groups`);
+    }
+
+    public getGroupQuestions(groupId) {
+        return this.get(`/v1/question_groups/${groupId}/questions`);
+    }
+
+
+
 
 
 
