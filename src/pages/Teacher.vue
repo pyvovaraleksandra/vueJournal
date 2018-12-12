@@ -7,12 +7,10 @@
             </div>
             <div class="">Выйти</div>
         </div>
-        <modules/>
         <div class="Teacher__row">
-            <groups/>
-            <groups/>
+            <modules class="Teacher__row-col"/>
+            <groups class="Teacher__row-col"/>
         </div>
-
     </div>
 </template>
 
@@ -62,8 +60,7 @@
             background: rgba(74, 74, 74, 0.6);
             box-shadow: 0 0 8px 0 rgba(0, 0, 0, .7);
             border: 2px solid #4e4e4e;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding: 5px 10px;
             display: flex;
             justify-content: space-between;
 
@@ -75,19 +72,12 @@
 
         &__row {
             display: flex;
+            justify-content: space-between;
             width: 70%;
-            margin-top: 1rem;
-        }
-    }
-</style>
 
-<style lang="scss">
-    .Teacher {
-        &__modules {
-            width: 100%;
-        }
-        &__groups {
-            width: 50%;
+            &-col {
+                width: 49%;
+            }
         }
     }
 </style>

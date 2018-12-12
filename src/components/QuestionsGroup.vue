@@ -1,5 +1,5 @@
 <template>
-    <div class="Teacher__groups">
+    <div>
         <div class="Block">
             <div class="Block__title">Создать группу вопросов для модуля</div>
             <div class="Block__wrap" >
@@ -19,11 +19,10 @@
                     <div slot="content">
                         <spinner class="Block__spinner" v-if="loadingGroups"/>
                         <div v-for="group in groups" class="Block__moduleWrap">
-                            <a class="Block__module" @click="">
+                            <a class="Block__module" @click="handleShowGroup(group.id)">
                                 {{ group.title }} ({{ group.points }} балла)
                             </a>
                             <div class="Block__buttons">
-                                <i class="material-icons Block__buttons-icon" @click="">remove_red_eye</i>
                                 <i class="material-icons Block__buttons-icon" @click="">edit</i>
                                 <i class="material-icons Block__buttons-icon">close</i>
                             </div>
@@ -85,8 +84,8 @@
         },
         methods: {
             ...mapActions(["getGroupList"]),
-            handleShowForm(disciplineId) {
-                this.$router.push(`/teacher/discipline/${disciplineId}/create-module`);
+            handleShowGroup(groupId) {
+                this.$router.push(`/teacher/group/${groupId}`);
             }
         },
     }
@@ -200,7 +199,7 @@
             display: flex;
             align-items: center;
             justify-content: space-around;
-            width: 100px;
+            width: 50px;
 
             &-icon {
                 text-shadow: 0 9px 12px #23504b;

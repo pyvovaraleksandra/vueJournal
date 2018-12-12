@@ -17,7 +17,7 @@ const module: Module<QuestionsGroupState, {}> = {
         setGroupsFetchStatus(state, status: FetchStatus) {
             state.fetchGroupsStatus = status;
         },
-        setQuestionGroups(state, groups) {
+        setGroups(state, groups) {
             state.groups = groups;
         }
     },
@@ -39,7 +39,7 @@ const module: Module<QuestionsGroupState, {}> = {
                 title: group.title
             }));
 
-            commit("setQuestionGroups", groups);
+            commit("setGroups", groups);
             commit("setGroupsFetchStatus", "ok");
         },
     },
