@@ -21,6 +21,7 @@ class ApiService {
         return this.post(`/v1/sign_in`, body);
     }
 
+    // STUDENTS
     public getRelationships() {
         return this.get(`/v1/relationships/current`);
     }
@@ -32,6 +33,33 @@ class ApiService {
     public getModule(relationshipId: number, moduleId: number) {
         return this.get(`/v1/relationships/${relationshipId}/modules/${moduleId}`);
     }
+
+    public postAnswer({ params, body }) {
+        return this.post(
+            `/v1/relationships/${params.relationshipId}/modules/${params.moduleId}/questions/${params.questionId}/answer`,
+            body
+        );
+    }
+
+
+    // TEACHERS AND ADMINS
+    public getDisciplines() {
+        return this.get(`/v1/disciplines`);
+    }
+
+    public getCreatedModules(id: number) {
+        return this.get(`/v1/disciplines/${id}/modules`);
+    }
+
+    public postCretaeModule({ params, body }) {
+        return this.post(
+            `/v1/disciplines/${params.disciplineId}/modules`,
+            body
+        );
+    }
+
+
+
 
     private get(url: string, request?: HttpOptions) {
         const token = localStorage.getItem("token");

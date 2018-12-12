@@ -8,58 +8,74 @@
             <div class="Module__spinner" v-if="loading">
                 <spinner class="Disciplines__spinner"/>
             </div>
-
-            <form
-                    v-else
+            <template v-else>
+                <div class="Module__timer">
+                    Осталось времени:
+                    <span class="Module__timer-number">
+                        50:31
+                    </span>
+                </div>
+                <form
                     class="Module__form"
                     novalidate
-            >
-                <div
+                    @submit.prevent=""
+                >
+                    <div
                         class="row Module__question"
                         :class="{'is-text': question.kind === 'text'}"
                         v-for="(question, index) in questions"
-                >
-                    <div class="Module__question-index"> {{ index+1 }}. </div>
+                    >
+                        <div class="Module__question-index"> {{ index+1 }}. </div>
 
-                    <div class="input-field Module__question-text" v-if="question.kind === 'text'">
-                        <input id="question" type="text">
-                        <label for="question">{{ question.text }}</label>
+                        <div class="input-field Module__question-text" v-if="question.kind === 'text'">
+                            <input id="question" type="text" @blur="handleAnswer(question.id, $event)">
+                            <label for="question">{{ question.text }}</label>
+                        </div>
+                        <div v-else class="Module__question-text" @input="handleAnswer(question.id, $event)">
+                            {{ question.text }}:
+                            <p v-for="(variant, index) in question.variants">
+                                <label>
+                                    <input :name="question.id" :type="question.kind" :value="index"/>
+                                    <span>{{ variant }}</span>
+                                </label>
+                            </p>
+                        </div>
                     </div>
-                    <div v-else class="Module__question-text">
-                        {{ question.text }}:
-                        <p v-for="variant in question.variants">
-                            <label>
-                                <input :name="question.id" :type="question.kind" />
-                                <span>{{ variant }}</span>
-                            </label>
-                        </p>
-                    </div>
-                </div>
-                <div class="row Module__buttons">
-                    <button
-                            class="btn waves-effect waves-light"
+                    <div class="row Module__buttons">
+                        <button
+                            class="btn waves-effect waves-light modal-trigger"
                             type="submit"
                             name="action"
-                    >
-                        ЗАВЕРШИТЬ
-                    </button>
-                    <button
+                            @click="openModuleModal"
+                        >
+                            ЗАВЕРШИТЬ
+                        </button>
+                        <button
                             class="btn waves-effect waves-light Module__buttons-back"
                             type="button"
                             name="action"
                             @click="handleBack()"
-                    >
-                        Назад
-                    </button>
-                </div>
-            </form>
+                        >
+                            Назад
+                        </button>
+                    </div>
+                </form>
+            </template>
         </div>
+        <modal @close="closeModuleModal" v-if="show">
+            <div slot="header">Завершение</div>
+            <div slot="body">
+                <div>Вы уверены, что хотите завершить модуль?</div>
+                <div>У Вас осталось <span class="Result__my">3</span> неотвеченных вопроса</div>
+            </div>
+        </modal>
     </div>
 </template>
 
 <script>
-    import { mapState, mapActions } from 'vuex';
+    import { mapState, mapMutations, mapActions } from 'vuex';
     import spinner from "../../public/spinner.svg";
+    import modal from "../components/baseModal";
 
     export default {
         name: "Module",
@@ -71,9 +87,11 @@
         },
         components: {
             spinner,
+            modal,
         },
         computed: {
             ...mapState({
+                show: state => state.module.showModal,
                 loading: state => state.module.fetchStatus === "init" ||
                          state.module.fetchStatus === "loading",
                 questions: state => state.module.questions,
@@ -82,10 +100,21 @@
             }),
         },
         methods: {
-            ...mapActions(["getModule"]),
+            ...mapMutations(["closeModuleModal", "openModuleModal"]),
+            ...mapActions(["getModule", "postAnswers"]),
             handleBack() {
                 this.$router.push(`/disciplines/`);
-            }
+            },
+            handleAnswer(questionId, event) {
+                const answer = event.path[0].value;
+
+                this.postAnswers({
+                    disciplineId: +this.disciplineId,
+                    moduleId: +this.id,
+                    questionId,
+                    answer
+                });
+            },
         },
         mounted() {
             this.getModule({disciplineId: this.disciplineId, moduleId: this.id});
@@ -121,6 +150,17 @@
 
         &__spinner {
             text-align: center;
+        }
+
+        &__timer {
+            width: 70%;
+            text-align: right;
+            margin: 0 auto;
+            padding-bottom: 10px;
+
+            &-number {
+                font-weight: 500;
+            }
         }
 
         &__form {

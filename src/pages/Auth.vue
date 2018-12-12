@@ -8,7 +8,7 @@
             <div class="row mb-0">
                 <div class="input-field col s6 offset-s3 Welcome__input">
                     <input id="email" type="text" v-model="email">
-                    <label for="email">Email</label>
+                    <label for="email">E-mail</label>
                     <validation
                         :formKey="formKey"
                         field="email"
@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="input-field col s6 offset-s3 Welcome__input">
                     <input id="password" type="password" v-model="password">
-                    <label for="password">Password</label>
+                    <label for="password">Пароль</label>
                     <validation
                         :formKey="formKey"
                         field="password"
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="row">
-                <button class="btn waves-effect waves-light Welcome__btn" type="submit" name="action">Submit</button>
+                <button class="btn waves-effect waves-light Welcome__btn" type="submit" name="action">Войти</button>
             </div>
         </form>
     </div>

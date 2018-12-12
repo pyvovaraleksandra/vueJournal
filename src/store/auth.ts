@@ -3,8 +3,6 @@ import { email, Form, required } from "./lib/vuex-form";
 import api from "./lib/api";
 import router from "../main";
 
-type FetchStatus = "init" | "loading" | "ok" | "error";
-
 export interface AuthState {
     fetchStatus: FetchStatus;
     email: string;
@@ -72,11 +70,11 @@ const module: Module<AuthState, {}> = {
                 localStorage.setItem('logined', "true");
                 localStorage.setItem('user', JSON.stringify(settings));
 
-                commit("authForm/setUserData", {email: response.email, name: response.name});
+                commit("setUserData", {email: response.email, name: response.name}, {root: true});
 
-                router.push({
-                    path: "/disciplines"
-                });
+                const path = response.role === "student" ? "/disciplines" : "/teacher-disciplines";
+
+                router.push({ path });
 
                 commit("setFetchStatus", "ok");
             },

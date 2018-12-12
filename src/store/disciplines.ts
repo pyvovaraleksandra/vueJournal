@@ -1,8 +1,6 @@
 import { Module } from "vuex";
 import api from "./lib/api";
 
-type FetchStatus = "init" | "loading" | "ok" | "error";
-
 export interface DisciplinesState {
     fetchStatus: FetchStatus;
     disciplines: String[];

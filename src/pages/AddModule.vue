@@ -1,16 +1,17 @@
 <template>
     <div class="Layout">
-        <div class="Disciplines__you">
+        <div class="TeacherDisciplines__you">
             <div>
                 Вы зашли под именем
-                <span  class="Disciplines__you-name">Иванов Иван</span>
+                <span  class="TeacherDisciplines__you-name">Коба Сергей</span>
             </div>
             <div class="">Выйти</div>
         </div>
-        <div class="Disciplines container">
-            <div class="Disciplines__title">Выберите дисциплину: </div>
-            <div class="Disciplines__wrap" >
-                <spinner class="Disciplines__spinner" v-if="loading"/>
+
+        <div class="TeacherDisciplines container">
+            <div class="TeacherDisciplines__title">Создать модуль для дисциплины</div>
+            <div class="TeacherDisciplines__wrap" >
+                <spinner class="TeacherDisciplines__spinner" v-if="loading"/>
                 <BaseCollapse
                         v-for="(discipline, index) in disciplines"
                         :index="index + 1"
@@ -18,16 +19,17 @@
                         v-else
                 >
                     <div slot="header">
-                        <a class="waves-effect waves-light btn Disciplines__discipline"> {{ discipline.name }} </a>
+                        <a class="waves-effect waves-light btn TeacherDisciplines__discipline"> {{ discipline.name }} </a>
                     </div>
                     <div slot="content">
                         <a
-                                v-for="module in discipline.modules"
-                                class="Disciplines__module"
-                                @click="handleShowModule(discipline.id, module.id)"
+                            v-for="module in discipline.modules"
+                            class="TeacherDisciplines__module"
+                            @click="handleShowModule(discipline.id, module.id)"
                         >
                             {{ module.title }}
                         </a>
+                        <a class="waves-effect waves-light btn TeacherDisciplines__module-create" @click="handleShowForm(discipline.id)">СОЗДАТЬ НОВЫЙ МОДУЛЬ </a>
                     </div>
                 </BaseCollapse>
             </div>
@@ -39,6 +41,7 @@
     import { mapState, mapActions } from "vuex";
     import spinner from "../../public/spinner.svg";
     import BaseCollapse from "../components/BaseCollapse";
+
 
     export default {
         name: 'Discipline',
@@ -55,19 +58,19 @@
             ...mapState({
                 email: state => state.auth.email,
                 name: state => state.auth.name,
-                disciplines: state => state.disciplines.disciplines,
-                loading: state => state.disciplines.fetchStatus === "init" ||
-                         state.disciplines.fetchStatus === "loading",
+                disciplines: state => state.addModule.disciplines,
+                loading: state => state.addModule.fetchStatus === "init" ||
+                         state.addModule.fetchStatus === "loading",
             }),
         },
         methods: {
-            ...mapActions(["getDisciplines"]),
-            handleShowModule(disciplineId, id) {
-                this.$router.push(`/disciplines/${disciplineId}/modules/${id}`);
+            ...mapActions(["getDisciplinesList"]),
+            handleShowForm(disciplineId) {
+                this.$router.push(`/teacher-disciplines/${disciplineId}/create-module`);
             }
         },
         mounted() {
-            this.getDisciplines();
+            this.getDisciplinesList();
         },
     }
 </script>
@@ -76,14 +79,14 @@
     .Layout {
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
         height: 100vh;
-        background: url("../assets/Disciplines-bg.jpg") center;
+        background: url("../assets/AddModule-bg.jpg") center;
         background-size: cover;
     }
 
-    .Disciplines {
+    .TeacherDisciplines {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -102,7 +105,7 @@
             box-shadow: 0 0 8px 0 rgba(0, 0, 0, .7);
             border: 2px solid #4e4e4e;
             padding-left: 1rem;
-            padding-right: 2rem;
+            padding-right: 1rem;
             display: flex;
             justify-content: space-between;
 
@@ -142,6 +145,16 @@
                 cursor: pointer;
                 text-shadow: 0 9px 12px black;
             }
+
+            &-create {
+                font-size: 11px;
+                height: 30px;
+                background: rgba(36, 166, 154, .31);
+                min-height: 30px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
         }
 
         &__wrap {
@@ -162,6 +175,9 @@
                 outline: 1px solid slategrey;
             }
         }
-    }
 
+        &__input {
+
+        }
+    }
 </style>

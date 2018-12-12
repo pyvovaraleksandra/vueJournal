@@ -13,6 +13,7 @@ export interface ModuleState {
     questions: QuestionType;
     discipline: string;
     module: string;
+    showModal: Boolean;
 }
 
 const module: Module<ModuleState, {}> = {
@@ -20,7 +21,8 @@ const module: Module<ModuleState, {}> = {
         fetchStatus: "init",
         questions: {} as QuestionType,
         discipline: "",
-        module: ""
+        module: "",
+        showModal: true,
     },
     mutations: {
         setFetchStatus(state, status: FetchStatus) {
@@ -34,10 +36,16 @@ const module: Module<ModuleState, {}> = {
         },
         setModuleName(state, name) {
             state.module = name;
+        },
+        openModuleModal(state) {
+            state.showModal = true
+        },
+        closeModuleModal(state) {
+            state.showModal = false
         }
     },
     actions: {
-        async getModule({commit}, {disciplineId, moduleId}) {
+        async getModule({commit},  { disciplineId, moduleId }) {
             commit("setFetchStatus", "loading");
 
             const disciplines = JSON.parse(localStorage.getItem("disciplines"));
@@ -73,6 +81,19 @@ const module: Module<ModuleState, {}> = {
 
             commit("setQuestions", questions);
             commit("setFetchStatus", "ok");
+        },
+        async postAnswers({},{ disciplineId, moduleId, questionId, answer } ) {
+            const body = {
+                "answer": answer
+            };
+            const { status, response, errors} = await api.postAnswer({
+                params: {
+                    disciplineId,
+                    moduleId,
+                    questionId
+                },
+                body
+            });
         }
     },
 };
