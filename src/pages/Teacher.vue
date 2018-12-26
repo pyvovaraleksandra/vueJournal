@@ -5,7 +5,7 @@
                 Вы зашли под именем
                 <span  class="Teacher__you-name">Коба Сергей</span>
             </div>
-            <div class="">Выйти</div>
+            <div class="Teacher__logout" @click="logoutUser">Выйти</div>
         </div>
         <div class="Teacher__row">
             <modules class="Teacher__row-col"/>
@@ -27,12 +27,11 @@
         },
         computed: {
             ...mapState({
-                email: state => state.auth.email,
-                name: state => state.auth.name,
+                name: state => state.auth.name || JSON.parse(localStorage.getItem('user')).name,
             }),
         },
         methods: {
-            ...mapActions(["getDisciplinesList"]),
+            ...mapActions(["getDisciplinesList", "logoutUser"]),
         },
         mounted() {
             this.getDisciplinesList();
@@ -77,6 +76,18 @@
 
             &-col {
                 width: 49%;
+            }
+        }
+
+        &__logout {
+            cursor: pointer;
+            text-shadow: 0 6px 12px black;
+            transition: transform .3s;
+
+            &:hover {
+                transform: translateY(-1px);
+                cursor: pointer;
+                text-shadow: 0 9px 12px black;
             }
         }
     }

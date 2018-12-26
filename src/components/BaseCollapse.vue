@@ -27,7 +27,7 @@
             toggleContent() {
                 this.contentOpen = !this.contentOpen;
 
-                this.$emit("click");
+                this.$emit("click", this.contentOpen);
             },
         }
     }

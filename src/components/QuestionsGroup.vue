@@ -5,13 +5,14 @@
             <div class="Block__wrap" >
                 <spinner class="Block__spinner" v-if="loading"/>
                 <BaseCollapse
-                        v-for="(module, index) in modules"
-                        :index="index + 1"
-                        :key="index"
-                        v-else
+                    v-for="(module, index) in modules"
+                    :index="index + 1"
+                    :key="index"
+                    @click="handleModuleClick($event,module.id)"
+                    v-else
                 >
                     <div slot="header">
-                        <a class="waves-effect waves-light btn Block__discipline" @click.prevent="getGroupList(module.id)">
+                        <a class="waves-effect waves-light btn Block__discipline">
                             {{ module.title }}
                             <span class="Block__discipline-span"> ({{ module.discipline }}) </span>
                         </a>
@@ -23,7 +24,6 @@
                                 {{ group.title }} ({{ group.points }} балла)
                             </a>
                             <div class="Block__buttons">
-                                <i class="material-icons Block__buttons-icon" @click="">edit</i>
                                 <i class="material-icons Block__buttons-icon">close</i>
                             </div>
                         </div>
@@ -45,7 +45,7 @@
     import { mapState, mapActions } from "vuex";
     import spinner from "../../public/spinner.svg";
     import BaseCollapse from "./BaseCollapse";
-    import modal from "./BaseModal";
+    import modal from "./BaseModalWindow";
 
     export default {
         name: "QuestionsGroup",
@@ -86,6 +86,12 @@
             ...mapActions(["getGroupList"]),
             handleShowGroup(groupId) {
                 this.$router.push(`/teacher/group/${groupId}`);
+            },
+            handleModuleClick(isOpened, moduleId) {
+                if (!isOpened) {
+                    return;
+                }
+                this.getGroupList(moduleId);
             }
         },
     }

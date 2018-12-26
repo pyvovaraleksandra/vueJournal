@@ -42,7 +42,7 @@
     import { mapState } from "vuex";
     import spinner from "../../public/spinner.svg";
     import BaseCollapse from "./BaseCollapse";
-    import modal from "./BaseModal";
+    import modal from "./BaseModalWindow";
 
     export default {
         name: "TeacherModules",

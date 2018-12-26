@@ -22,7 +22,7 @@ const module: Module<ModuleState, {}> = {
         questions: {} as QuestionType,
         discipline: "",
         module: "",
-        showModal: true,
+        showModal: false,
     },
     mutations: {
         setFetchStatus(state, status: FetchStatus) {

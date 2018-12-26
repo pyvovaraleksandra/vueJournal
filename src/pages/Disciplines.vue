@@ -3,9 +3,9 @@
         <div class="Disciplines__you">
             <div>
                 Вы зашли под именем
-                <span  class="Disciplines__you-name">Иванов Иван</span>
+                <span  class="Disciplines__you-name">{{ name }}</span>
             </div>
-            <div class="">Выйти</div>
+            <div class="Disciplines__logout" @click="logoutUser">Выйти</div>
         </div>
         <div class="Disciplines container">
             <div class="Disciplines__title">Выберите дисциплину: </div>
@@ -48,18 +48,18 @@
         },
         computed: {
             ...mapState({
-                email: state => state.auth.email,
-                name: state => state.auth.name,
+                name: state => state.auth.name || JSON.parse(localStorage.getItem('user')).name,
                 disciplines: state => state.disciplines.disciplines,
                 loading: state => state.disciplines.fetchStatus === "init" ||
                          state.disciplines.fetchStatus === "loading",
             }),
         },
         methods: {
-            ...mapActions(["getDisciplines"]),
+            ...mapActions(["getDisciplines", "logoutUser"]),
             handleShowModule(disciplineId, id) {
                 this.$router.push(`/disciplines/${disciplineId}/modules/${id}`);
-            }
+            },
+
         },
         mounted() {
             this.getDisciplines();
@@ -155,6 +155,18 @@
             &::-webkit-scrollbar-thumb {
                 background-color: darkgrey;
                 outline: 1px solid slategrey;
+            }
+        }
+
+        &__logout {
+            cursor: pointer;
+            text-shadow: 0 6px 12px black;
+            transition: transform .3s;
+
+            &:hover {
+                transform: translateY(-1px);
+                cursor: pointer;
+                text-shadow: 0 9px 12px black;
             }
         }
     }

@@ -62,7 +62,7 @@
                 </form>
             </template>
         </div>
-        <modal @close="closeModuleModal" v-if="show">
+        <modal @close="closeModuleModal" v-if="showModal">
             <div slot="header">Завершение</div>
             <div slot="body">
                 <div>Вы уверены, что хотите завершить модуль?</div>
@@ -75,7 +75,7 @@
 <script>
     import { mapState, mapMutations, mapActions } from 'vuex';
     import spinner from "../../public/spinner.svg";
-    import modal from "../components/baseModal";
+    import modal from "../components/BaseModalWindow";
 
     export default {
         name: "Module",
@@ -91,7 +91,7 @@
         },
         computed: {
             ...mapState({
-                show: state => state.module.showModal,
+                showModal: state => state.module.showModal,
                 loading: state => state.module.fetchStatus === "init" ||
                          state.module.fetchStatus === "loading",
                 questions: state => state.module.questions,

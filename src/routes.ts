@@ -9,8 +9,22 @@ import group from "./pages/Group.vue";
 import router from "./main";
 
 const logined = localStorage.getItem('logined');
+const role = logined
+                ? JSON.parse(localStorage.getItem('user')).role
+                : "" ;
 
 const routes = [
+    {
+        path: '/',
+        component: auth,
+        beforeEnter: (to, from, next) => {
+            next(logined
+                ? role === "student"
+                    ? "/disciplines"
+                    : "/teacher"
+                : "/auth");
+        }
+    },
     {
         path: '/auth',
         component: auth,

@@ -3,8 +3,23 @@
         <form class="Group__form" @submit.prevent="">
             <div class="Group__title">
                 <div class="Group__title-discipline">Web technologies and web design</div>
-                <div class="Group__title-module">Html and css</div>
             </div>
+            <div class="Group__info">
+                <div class="Group__info-row">
+                    <div class="Group__info-label">Название группы</div>
+                    <input type="text" :value="title" class="Group__info-value">
+
+                </div>
+                <div class="Group__info-row">
+                    <div class="Group__info-label">Позиция</div>
+                    <input type="text" :value="position" class="Group__info-value">
+                </div>
+                <div class="Group__info-row">
+                    <div class="Group__info-label">Количество баллов</div>
+                    <input type="text" :value="points" class="Group__info-value">
+                </div>
+            </div>
+            <div class="Group__title-questions">Список вопросов: </div>
             <div
                 class="row Group__question"
                 :class="{'is-text': question.type === 'text'}"
@@ -16,21 +31,23 @@
                     <div class="input-field Group__question-value text">
                         <input id="text" type="text" :value="question.text">
                     </div>
+                    <!-- delete -->
+                    <i class="material-icons Group__question-delete">close</i>
                 </div>
                 <!-- KIND -->
                 <div class="Group__question-row">
                     <div class="Group__question-label">Тип вопроса:</div>
                     <div class="Group__question-value">
                         <label class="Group__question-valueLabel">
-                            <input name="kind" type="radio" value="text" :checked="question.kind === 'text'"/>
+                            <input :name="'kind-'+index" type="radio" value="text" :checked="question.kind === 'text'"/>
                             <span> открытый </span>
                         </label>
                         <label class="Group__question-valueLabel">
-                            <input name="kind" type="radio" value="one" :checked="question.kind === 'one'"/>
-                            <span> один враиант ответв </span>
+                            <input :name="'kind-'+index" type="radio" value="one" :checked="question.kind === 'one'"/>
+                            <span> один вариант ответа </span>
                         </label>
                         <label class="Group__question-valueLabel">
-                            <input name="kind" type="radio" value="many" :checked="question.kind === 'many'"/>
+                            <input :name="'kind-'+index" type="radio" value="many" :checked="question.kind === 'many'"/>
                             <span> несколько вариантов ответа </span>
                         </label>
                     </div>
@@ -39,22 +56,31 @@
                 <div class="Group__question-row" v-if="question.kind !== 'text' && newKind !== 'text'">
                     <div class="Group__question-label">Варианты ответов:</div>
                     <div class="Group__question-value" v-if="question.kind !== 'text'">
-                        <label class="Group__question-valueLabel" v-for="(variant, index) in question.variants">
-                            <input name="variants" :type="question.type" :value="index" :checked="question.answer.includes(index)"/>
-                            <span> {{ variant }} </span>
+                        <label class="Group__question-valueLabel kind" v-for="(variant, indexVariant) in question.variants">
+                            <div>
+                                <input :name="'variants-'+index" :type="question.type" :value="indexVariant" :checked="question.answer.includes(indexVariant)"/>
+                                <span> {{ variant }} </span>
+                            </div>
+                            <i class="material-icons Group__question-remove">close</i>
                         </label>
-                        <button class="btn waves-effect waves-light Group__question-add" type="submit" name="action">+</button>
+                        <button class="btn waves-effect waves-light Group__question-add">добавить вариант</button>
                     </div>
-                </div>
-                <!-- DELETE -->
-                <div class="Group__btn">
-                    <button class="btn waves-effect waves-light" type="submit" name="action">УДАЛИТЬ ВОПРОС</button>
                 </div>
             </div>
             <!-- SUBMIIT -->
-            <div class="Group__btn">
-                <button class="btn waves-effect waves-light" type="submit" name="action">ДОБАВИТЬ ЕЩЕ ОДИН ВОПРОС</button>
+            <div class="Group__buttons">
+                <button class="btn waves-effect waves-light Group__question-add question">добавить еще один вопрос</button>
+                <button class="btn waves-effect waves-light" type="submit" name="action">СОХРАНИТЬ ИЗМЕНЕНИЯ</button>
+                <button
+                    class="btn waves-effect waves-light Group__buttons-back"
+                    type="button"
+                    name="action"
+                    @click="handleBack()"
+                >
+                    Назад
+                </button>
             </div>
+
         </form>
     </div>
 </template>
@@ -63,14 +89,16 @@
     import { mapState, mapActions } from "vuex";
     import spinner from "../../public/spinner.svg";
     import BaseCollapse from "../components/BaseCollapse";
-    import modal from "../components/BaseModal";
+    import modal from "../components/BaseModalWindow";
+    import validation from "../components/BaseValidationError";
 
     export default {
         name: "Group",
         components: {
             spinner,
             BaseCollapse,
-            modal
+            modal,
+            validation
         },
         data() {
             return {
@@ -80,28 +108,30 @@
         },
         computed: {
             ...mapState({
+                groups: state => state.questionsGroup.groups,
                 questions: state => state.group.questions,
             }),
-            modules() {
-                const modules = [];
-
-                for (let discipline of this.disciplines) {
-                    const disciplineName = discipline.name;
-
-                    for (let module of discipline.modules) {
-                        modules.push({
-                            title: module.title,
-                            id: module.id,
-                            discipline: disciplineName
-                        });
-                    }
+            title() {
+                if (this.groups.length) {
+                    return this.groups[this.id-1].title
                 }
-
-                return modules;
-            }
+            },
+            position() {
+                if (this.groups.length) {
+                    return this.groups[this.id-1].position
+                }
+            },
+            points() {
+                if (this.groups.length) {
+                    return this.groups[this.id-1].points
+                }
+            },
         },
         methods: {
             ...mapActions(["getQuestionList"]),
+            handleBack() {
+                this.$router.push(`/teacher`);
+            },
         },
         mounted() {
             this.getQuestionList(this.id);
@@ -116,6 +146,31 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        
+        &__info {
+            border-bottom: 2px solid #827f7f;
+            padding: 10px 20px;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 1px #4e4e4e;
+
+            &-row {
+                display: flex;
+                margin-bottom: 7px;
+            }
+
+            &-label {
+                width: 30%;
+                flex-shrink: 0;
+            }
+
+            &-value {
+                flex-grow: 1;
+                margin-top: -4px !important;
+                height: 2rem !important;
+                border-bottom: 1px solid #cacaca !important;
+            }
+        }
 
         &__title {
             text-align: center;
@@ -126,10 +181,12 @@
                 margin-bottom: .5rem;
             }
 
-            &-module {
+            &-questions {
                 font-weight: 500;
-                font-size: 20px;
+                font-size: 16px;
                 margin-bottom: 3rem;
+                text-transform: uppercase;
+                text-align: center;
             }
         }
 
@@ -169,23 +226,66 @@
                 }
 
                 &Label {
-                    display: block;
                     color: rgba(0,0,0,0.87);
+                    display: flex;
+                    justify-content: space-between;
+
+                    &.kind {
+                        width: 45%;
+                    }
                 }
             }
 
             &-add {
-                width: 100px;
                 margin-top: 12px;
                 background: #efefef;
                 color: #1e887e;
                 font-weight: 600;
-                font-size: 20px;
+                font-size: 14px;
+                text-transform: lowercase;
+
+                &.question {
+                    max-width: 240px;
+                    align-self: center;
+                    margin-top: -1rem;
+                    margin-bottom: 3rem;
+                }
+            }
+
+            &-remove {
+                color: #d4d4d4;
+                transition: .3s;
+                transform-origin: center;
+
+                &:hover {
+                    cursor: pointer;
+                    color: #26a69a;
+                    transform: scale(1.1);
+                }
+            }
+
+            &-delete {
+                color: #26a69a;
+                transition: transform .3s;
+                transform-origin: center;
+
+                &:hover {
+                    cursor: pointer;
+                    transform: scale(1.1);
+                }
             }
         }
 
-        &__btn {
-            text-align: center;
+        &__buttons {
+            display: flex;
+            flex-direction: column;
+            width: 70%;
+            margin: 0 auto;
+
+            &-back {
+                margin-top: 1rem;
+                background-color: #aebbba;
+            }
         }
     }
 </style>

@@ -25,6 +25,15 @@ const module: Module<AuthState, {}> = {
         },
     },
     actions: {
+        logoutUser({ commit }) {
+            commit("setUserData", {email: "", name: ""});
+            localStorage.removeItem("logined");
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+
+            router.push("/1111");
+            // router.push("/auth");
+        }
     },
     modules: {
         authForm: new Form({
@@ -74,7 +83,8 @@ const module: Module<AuthState, {}> = {
 
                 const path = response.role === "student" ? "/disciplines" : "/teacher";
 
-                router.push({ path });
+                // router.push(path);
+                router.push("/1212");
 
                 commit("setFetchStatus", "ok");
             },

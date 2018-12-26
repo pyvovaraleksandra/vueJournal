@@ -32,7 +32,11 @@ const module: Module<GroupState, {}> = {
             }
 
             const questions = response.map(q => {
-                const answer = q.kind === "text" ? "" : q.answer.slice(1, -1).split(",").map(a => +a);
+                const answer = q.kind === "text"
+                                ? ""
+                                : q.kind === "one"
+                                    ? q.answer
+                                    : q.answer.slice(1, -1).split(",").map(a => +a);
                 return {
                     text: q.description,
                     id: q.id,
