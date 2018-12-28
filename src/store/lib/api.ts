@@ -58,6 +58,7 @@ class ApiService {
         );
     }
 
+    // question group
     public getQuestionGroups(id) {
         return this.get(`/v1/modules/${id}/question_groups`);
     }
@@ -66,7 +67,12 @@ class ApiService {
         return this.get(`/v1/question_groups/${groupId}/questions`);
     }
 
-
+    public postUpdateGroup({ params, body }) {
+        return this.post(
+            `/v1/modules/${params.disciplineModuleId}/question_groups/${params.id}`,
+            body
+        );
+    }
 
 
 

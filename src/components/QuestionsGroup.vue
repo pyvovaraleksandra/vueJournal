@@ -19,8 +19,8 @@
                     </div>
                     <div slot="content">
                         <spinner class="Block__spinner" v-if="loadingGroups"/>
-                        <div v-for="group in groups" class="Block__moduleWrap">
-                            <a class="Block__module" @click="handleShowGroup(group.id)">
+                        <div v-else v-for="(group, groupId) in groups" class="Block__moduleWrap">
+                            <a class="Block__module" @click="handleShowGroup(group.disciplineModuleId, groupId)">
                                 {{ group.title }} ({{ group.points }} балла)
                             </a>
                             <div class="Block__buttons">
@@ -84,7 +84,8 @@
         },
         methods: {
             ...mapActions(["getGroupList"]),
-            handleShowGroup(groupId) {
+            handleShowGroup(disciplineModuleId, groupId) {
+                localStorage.setItem("selectedGroup", JSON.stringify({disciplineModuleId, groupId}));
                 this.$router.push(`/teacher/group/${groupId}`);
             },
             handleModuleClick(isOpened, moduleId) {

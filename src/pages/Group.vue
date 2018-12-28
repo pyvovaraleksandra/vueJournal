@@ -1,22 +1,39 @@
 <template>
     <div class="Group">
-        <form class="Group__form" @submit.prevent="">
+        <form class="Group__form" @submit.prevent="submit({payload: {disciplineModuleId, id}, meta: {}})">
             <div class="Group__title">
                 <div class="Group__title-discipline">Web technologies and web design</div>
             </div>
             <div class="Group__info">
                 <div class="Group__info-row">
                     <div class="Group__info-label">Название группы</div>
-                    <input type="text" :value="title" class="Group__info-value">
-
+                    <div class="flex-grow-1">
+                        <input type="text" v-model="title" class="Group__info-value">
+                        <validation
+                            formKey="groupForm"
+                            field="title"
+                        />
+                    </div>
                 </div>
                 <div class="Group__info-row">
                     <div class="Group__info-label">Позиция</div>
-                    <input type="text" :value="position" class="Group__info-value">
+                    <div class="flex-grow-1">
+                        <input type="text" v-model="position" class="Group__info-value">
+                        <validation
+                            formKey="groupForm"
+                            field="position"
+                        />
+                    </div>
                 </div>
                 <div class="Group__info-row">
                     <div class="Group__info-label">Количество баллов</div>
-                    <input type="text" :value="points" class="Group__info-value">
+                    <div class="flex-grow-1">
+                        <input type="text" v-model="points" class="Group__info-value">
+                        <validation
+                            formKey="groupForm"
+                            field="points"
+                        />
+                    </div>
                 </div>
             </div>
             <div class="Group__title-questions">Список вопросов: </div>
@@ -91,6 +108,7 @@
     import BaseCollapse from "../components/BaseCollapse";
     import modal from "../components/BaseModalWindow";
     import validation from "../components/BaseValidationError";
+    import { mapFieldsToComputed } from "../store/lib/vuex-form/index";
 
     export default {
         name: "Group",
@@ -103,7 +121,8 @@
         data() {
             return {
                 id: this.$route.params.groupId,
-                newKind: ''
+                newKind: '',
+                disciplineModuleId: JSON.parse(localStorage.getItem("selectedGroup")).disciplineModuleId
             }
         },
         computed: {
@@ -111,35 +130,40 @@
                 groups: state => state.questionsGroup.groups,
                 questions: state => state.group.questions,
             }),
-            title() {
-                if (this.groups.length) {
-                    return this.groups[this.id-1].title
-                }
-            },
-            position() {
-                if (this.groups.length) {
-                    return this.groups[this.id-1].position
-                }
-            },
-            points() {
-                if (this.groups.length) {
-                    return this.groups[this.id-1].points
-                }
-            },
+            // position() {
+            //     if (this.groups.length) {
+            //         return this.groups[this.id-1].position
+            //     }
+            // },
+            // points() {
+            //     if (this.groups.length) {
+            //         return this.groups[this.id-1].points
+            //     }
+            // },
+            ...mapFieldsToComputed("groupForm", [
+                "title",
+                "position",
+                "points",
+            ]),
         },
         methods: {
-            ...mapActions(["getQuestionList"]),
+            ...mapActions(["initGroup"]),
+            ...mapActions("groupForm", ["submit"]),
             handleBack() {
                 this.$router.push(`/teacher`);
             },
         },
         mounted() {
-            this.getQuestionList(this.id);
+            this.initGroup();
         }
     }
 </script>
 
 <style lang="scss" scoped>
+    .flex-grow-1 {
+        flex-grow: 1;
+    }
+
     .Group {
         min-height: 100vh;
         background: #efefef;
@@ -286,6 +310,10 @@
                 margin-top: 1rem;
                 background-color: #aebbba;
             }
+        }
+
+        .BaseValidationError {
+            margin-top: -15px;
         }
     }
 </style>

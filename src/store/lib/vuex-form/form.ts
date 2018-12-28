@@ -121,7 +121,6 @@ export class Form<TFields = any> implements Module<FormState<TFields>, any> {
                 }
             },
             setErrors(state, { errors }) {
-                console.log(">", errors);
                 const map = Map(errors)
                     .filter((value, key) => state.fields.has(key) || key === "form");
 

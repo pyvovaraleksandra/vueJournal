@@ -22,6 +22,19 @@ const module: Module<GroupState, {}> = {
         }
     },
     actions: {
+        initGroup({ rootState, commit, dispatch }) {
+            const groupId = JSON.parse(localStorage.getItem("selectedGroup")).groupId;
+
+            const group = rootState["questionsGroup"].groups[groupId];
+
+            commit("groupForm/setData", {fields: {
+                title: group.title,
+                position: group.position,
+                points: group.points
+            }});
+
+            dispatch("getQuestionList", groupId);
+        },
         async getQuestionList({ commit, dispatch }, groupId) {
             commit("setGroupFetchStatus", "loading");
 
@@ -57,7 +70,47 @@ const module: Module<GroupState, {}> = {
         },
     },
     modules: {
+        groupForm: new Form({
+            throttle: 300,
+            fields: {
+                title: {
+                    type: String,
+                    validators: [
+                        required(),
+                    ],
+                },
+                position: {
+                    type: String,
+                    validators: [
+                        required(),
+                    ],
+                },
+                points: {
+                    type: String,
+                    validators: [
+                        required(),
+                    ],
+                },
+            },
+            async onSubmit({ commit, getters }, { disciplineModuleId, id }) {
+                const params = {  disciplineModuleId, id };
 
+                const body = {
+                    title : getters['field']("title"),
+                    position : getters['field']("position"),
+                    points : getters['field']("points"),
+                };
+
+                const { errors } = await api.postUpdateGroup({ params, body });
+
+                if (errors) {
+                    console.error(errors);
+                    return
+                }
+
+                router.push(`/teacher`);
+            },
+        }),
     }
 };
 

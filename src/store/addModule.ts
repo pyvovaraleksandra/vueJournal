@@ -63,13 +63,6 @@ const module: Module<AddModuleState, {}> = {
                 }));
         },
         async createModule({ commit }, disciplineId) {
-            const body = {
-                "title": "TITLE",
-                "duration": "duration"
-            };
-
-            console.log(disciplineId);
-
             // const { status, response, result } = api.postCretaeModule({
             //     params: {
             //         disciplineId

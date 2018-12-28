@@ -1,7 +1,5 @@
 import { Module } from "vuex";
 import api from "./lib/api";
-import { Form, required } from "./lib/vuex-form/index";
-import router from "../main";
 
 export interface QuestionsGroupState {
     fetchGroupsStatus: FetchStatus;
@@ -31,13 +29,15 @@ const module: Module<QuestionsGroupState, {}> = {
                 console.error(errors);
             }
 
-            const groups = response.map(group => ({
-                disciplineModuleId: group.discipline_module_id,
-                id: group.id,
-                points: group.points,
-                position: group.position,
-                title: group.title
-            }));
+            const groups = {};
+            for (let group of response) {
+                groups[group.id] = {
+                    disciplineModuleId: group.discipline_module_id,
+                    points: group.points,
+                    position: group.position,
+                    title: group.title
+                }
+            }
 
             commit("setGroups", groups);
             commit("setGroupsFetchStatus", "ok");
