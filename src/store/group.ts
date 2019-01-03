@@ -3,17 +3,45 @@ import api from "./lib/api";
 import { Form, required } from "./lib/vuex-form/index";
 import router from "../main";
 
+type questionFormsType = {
+    index: number;
+    existedQuestion?: object;
+}
+
 export interface GroupState {
     fetchGroupStatus: FetchStatus;
     questions: String[];
+    questionForms: questionFormsType[];
 }
 
 const module: Module<GroupState, {}> = {
     state: {
         fetchGroupStatus: "init",
-        questions: []
+        questions: [],
+        questionForms: [],
     },
     mutations: {
+        addQuestionForm(state, existedQuestion) { //TODO: rewrite without 0
+            if (!state.questionForms.length) {
+                state.questionForms.push({
+                    index: 0,
+                    ...existedQuestion
+                });
+
+                const formName = `questionForm-0`;
+                createNewForm(formName);
+            } else {
+                const lastItem = state.questionForms[state.questionForms.length-1];
+
+                state.questionForms.push({
+                    index: lastItem.index + 1,
+                    ...existedQuestion
+                });
+
+                const formName = `questionForm-${lastItem.index + 1}`;
+                createNewForm(formName);
+            }
+        },
         setGroupFetchStatus(state, status: FetchStatus) {
             state.fetchGroupStatus = status;
         },
@@ -45,12 +73,13 @@ const module: Module<GroupState, {}> = {
             }
 
             const questions = response.map(q => {
+
                 const answer = q.kind === "text"
                                 ? ""
                                 : q.kind === "one"
                                     ? q.answer
                                     : q.answer.slice(1, -1).split(",").map(a => +a);
-                return {
+                const result = {
                     text: q.description,
                     id: q.id,
                     questionGroupId: q.question_group_id,
@@ -63,10 +92,28 @@ const module: Module<GroupState, {}> = {
                     variants: q.variants,
                     answer
                 };
+
+                commit("addQuestionForm", result);
+
+                return result;
             });
 
             commit("setQuestions", questions);
             commit("setGroupFetchStatus", "ok");
+        },
+        async submitForm({ state, commit, dispatch, getters }) {
+            dispatch("groupForm/submit");
+
+            // for (let i of state.members) {
+            //     dispatch(`memberForm${i}/submit`);
+            // }
+
+            // const { errors } = await api.postCreateICO({ body });
+
+            // if (errors) {
+            //     console.error(errors);
+            //     return;
+            // }
         },
     },
     modules: {
@@ -113,5 +160,24 @@ const module: Module<GroupState, {}> = {
         }),
     }
 };
+
+import store from './../store';
+
+function createNewForm(formName: string) {
+    store.registerModule(formName, new Form({
+        fields: {
+            text: {
+                type: String,
+                validators: [],
+            },
+        },
+        onSubmit({ commit, getters }) {
+        },
+    }));
+}
+
+export function removeForm(this: any, formName: string) {
+    this.$store.unregisterModule(formName);
+}
 
 export default module;
